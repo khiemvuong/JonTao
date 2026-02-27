@@ -1,0 +1,182 @@
+/* ============================================
+   🎨 JON TÁO DESIGN SYSTEM — Global CSS
+   ============================================
+   File này là trung tâm quản lý toàn bộ biến màu sắc,
+   typography, spacing, và các giá trị thiết kế chung.
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Pattaya&display=swap');
+@import "tailwindcss";
+
+/* ─── CSS Custom Properties (non-Tailwind) ──────── */
+/* Khai báo trực tiếp trong :root để có thể dùng hàm var() ở mọi nơi */
+:root {
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --font-script: 'Pattaya', sans-serif;
+
+  /* ─── Brand Colors ──────────────────────────── */
+  --color-primary: #A875D2;
+  --color-primary-hover: #905bc0;
+  --color-primary-light: #FCFAFF;
+  --color-primary-10: rgba(168, 117, 210, 0.1);
+  --color-primary-20: rgba(168, 117, 210, 0.2);
+  --color-primary-30: rgba(168, 117, 210, 0.3);
+  --color-primary-40: rgba(168, 117, 210, 0.4);
+  --color-primary-50: rgba(168, 117, 210, 0.5);
+
+  /* ─── Neutral / Text ──────────────────────── */
+  --color-dark: #1a1a1a;
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+
+  /* ─── Spacing & Sizing ────────────────────── */
+  --radius-card: 2rem;
+  --radius-card-lg: 2.5rem;
+  --radius-card-xl: 3rem;
+  --radius-pill: 9999px;
+
+  /* Header heights for spacing calculations */
+  --header-height-mobile: 64px;
+  --header-height-desktop: 80px;
+
+  /* ─── Shadows ─────────────────────────────── */
+  --shadow-primary: 0 10px 30px rgba(168, 117, 210, 0.3);
+  --shadow-primary-hover: 0 10px 30px rgba(168, 117, 210, 0.5);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Tailwind Theme Customization ──────────────── */
+@theme {
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-script: var(--font-script);
+
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-10: var(--color-primary-10);
+  --color-primary-20: var(--color-primary-20);
+  --color-primary-30: var(--color-primary-30);
+  --color-primary-40: var(--color-primary-40);
+  --color-primary-50: var(--color-primary-50);
+
+  --color-dark: var(--color-dark);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+
+  --radius-card: var(--radius-card);
+  --radius-card-lg: var(--radius-card-lg);
+  --radius-card-xl: var(--radius-card-xl);
+  --radius-pill: var(--radius-pill);
+
+  --shadow-primary: var(--shadow-primary);
+  --shadow-primary-hover: var(--shadow-primary-hover);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+}
+
+/* ─── Base / Reset ──────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* Disabled — Lenis handles smooth scrolling */
+}
+
+/* Lenis smooth scroll integration */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-primary-light);
+  color: #333333;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Hide global scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-40) transparent;
+}
+
+/* WebKit global scrollbar (Chrome/Safari/Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-40);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* ─── Utility: Hide Scrollbar ───────────────────── */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ─── Selection Color ───────────────────────────── */
+::selection {
+  background-color: var(--color-primary-30);
+}
+
+/* ─── 3D Perspective Utilities ──────────────────── */
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* ─── Section Spacing (accounts for fixed header) ─ */
+.section-offset {
+  scroll-margin-top: var(--header-height-desktop);
+}
+
+@media (max-width: 768px) {
+  .section-offset {
+    scroll-margin-top: var(--header-height-mobile);
+  }
+}
+
+/* Desktop navbar uses taller height */
+@media (min-width: 1024px) {
+  #main-navbar {
+    height: var(--header-height-desktop) !important;
+  }
+}
