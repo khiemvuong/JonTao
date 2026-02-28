@@ -6,7 +6,7 @@ import { MotionValue, useMotionValueEvent } from 'motion/react';
 interface UseFrameSequenceOptions {
   /** Folder path under /public, e.g. "/assets/3d-frame" */
   folder: string;
-  /** File name template, e.g. "ezgif-frame-" */
+  /** File name template, e.g. "frame-" */
   prefix: string;
   /** Total number of frames */
   frameCount: number;

@@ -6,7 +6,7 @@ import { MotionValue } from 'motion/react';
 interface FrameSequenceCanvasProps {
   /** Folder path, e.g. "/assets/3d-frame" */
   folder: string;
-  /** File prefix, e.g. "ezgif-frame-" */
+  /** File prefix, e.g. "frame-" */
   prefix: string;
   /** Total frame count */
   frameCount: number;

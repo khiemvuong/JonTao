@@ -53,18 +53,19 @@ const ExplodedView = () => {
         </div>
 
         {/* ── Single centered column: text directly above canvas ── */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 gap-3 sm:gap-5">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 gap-3 sm:gap-5 pt-20 sm:pt-24">
 
           {/* Header */}
           <div className="z-30 text-center pointer-events-none shrink-0">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/60 text-xs sm:text-sm mb-3 sm:mb-4">
               <Cpu size={14} className="text-primary" />
-              Khám phá chiều sâu mới
+              Minh Bạch Tuyệt Đối
             </div>
-            <h2 className="font-display text-3xl sm:text-6xl md:text-7xl text-white font-medium tracking-tighter drop-shadow-2xl">
-              Sức mạnh ẩn sau{' '}
+            <h2 className="font-display text-3xl sm:text-5xl md:text-6xl text-white font-medium tracking-tighter drop-shadow-2xl max-w-2xl mx-auto leading-tight">
+              Chúng tôi không giấu giếm.{' '}
+              <br className="hidden sm:block" />
               <span className="font-script font-normal text-transparent bg-clip-text bg-linear-to-r from-primary to-pink-300 text-[1.15em] tracking-normal leading-normal">
-                vẻ đẹp hoàn mỹ
+                soi đến từng con ốc.
               </span>
             </h2>
           </div>
@@ -83,11 +84,11 @@ const ExplodedView = () => {
             >
               <FrameSequenceCanvas
                 folder="/assets/3d-exploded"
-                prefix="ezgif-frame-"
+                prefix="frame-"
                 startIndex={1}
                 frameCount={240}
                 scrollProgress={frameProgress}
-                padLength={3}
+                padLength={1}
                 className="w-full h-full opacity-90"
               />
             </div>
@@ -99,35 +100,35 @@ const ExplodedView = () => {
         {/* Card 1 — Security (left side, appears first) */}
         <motion.div
           style={{ opacity: card1Opacity, y: card1Y }}
-          className="absolute z-30 left-4 sm:left-[6%] top-[48%] sm:top-[50%] -translate-y-1/2 max-w-56 sm:max-w-xs will-change-[opacity,transform]"
+          className="absolute z-30 left-4 right-4 bottom-8 sm:bottom-auto sm:right-auto sm:left-[6%] sm:top-[50%] sm:-translate-y-1/2 sm:max-w-xs will-change-[opacity,transform]"
         >
           <div className={glassCardClass}>
             <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center mb-3 border border-white/5">
               <Shield size={16} className="text-white/80" />
             </div>
             <h3 className="font-display text-sm sm:text-base text-white/90 font-medium mb-1.5 tracking-wide">
-              Miền Ký Ức An Toàn
+              Bo Mạch Nguyên Bản
             </h3>
             <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light">
-              Secure Enclave che chở mọi thông điệp và hình ảnh thơ mộng của riêng bạn.
+              Mainboard sáng loáng, không dấu vết khò hàn. Mọi linh kiện đều ở trạng thái nguyên thủy từ nhà máy.
             </p>
           </div>
         </motion.div>
 
         {/* Card 2 — Performance (right side) */}
         <motion.div
-          style={{ opacity: card2Opacity, y: card2Y }}
-          className="absolute z-30 right-4 sm:right-[6%] top-[72%] sm:top-[55%] -translate-y-1/2 max-w-56 sm:max-w-xs text-right sm:text-left flex flex-col items-end sm:items-start will-change-[opacity,transform]"
+           style={{ opacity: card2Opacity, y: card2Y }}
+          className="absolute z-30 left-4 right-4 bottom-8 sm:bottom-auto sm:left-auto sm:right-[6%] sm:top-[55%] sm:-translate-y-1/2 sm:max-w-xs will-change-[opacity,transform]"
         >
           <div className={glassCardClass}>
-            <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center mb-3 border border-white/5 ml-auto sm:ml-0">
+            <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center mb-3 border border-white/5 sm:ml-auto">
               <Zap size={16} className="text-white/80" />
             </div>
-            <h3 className="font-display text-sm sm:text-base text-white/90 font-medium mb-1.5 tracking-wide">
-              Hiệu Suất Vô Tận
+            <h3 className="font-display text-sm sm:text-base text-white/90 font-medium mb-1.5 tracking-wide sm:text-right">
+              Màn Hình Không Ép Kính
             </h3>
-            <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light">
-              Ray-tracing phần cứng mang đến những dải sáng chân thực nhất trong lòng bàn tay.
+            <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light sm:text-right">
+              Mọi lớp đệm, ron cao su kháng nước đều được vệ sinh và giữ độ đàn hồi tối đa, không xô lệch.
             </p>
           </div>
         </motion.div>
@@ -135,17 +136,17 @@ const ExplodedView = () => {
         {/* Card 3 — Architecture (bottom center, appears last) */}
         <motion.div
           style={{ opacity: card3Opacity, y: card3Y }}
-          className="absolute z-30 left-1/2 -translate-x-1/2 bottom-[4%] sm:bottom-[8%] max-w-64 sm:max-w-sm will-change-[opacity,transform]"
+          className="absolute z-30 left-4 right-4 bottom-8 sm:bottom-[8%] sm:left-1/2 sm:-translate-x-1/2 sm:right-auto sm:max-w-sm will-change-[opacity,transform]"
         >
           <div className={`${glassCardClass} text-center flex flex-col items-center`}>
             <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center mb-3 border border-white/5">
               <Cpu size={16} className="text-white/80" />
             </div>
             <h3 className="font-display text-sm sm:text-base text-white/90 font-medium mb-1.5 tracking-wide">
-              Trái Tim A19 Pro
+              Mạch Ghép Hoàn Hảo
             </h3>
             <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light">
-              Kiến trúc chip đột phá, thổi bùng sự sống cho từng điểm pixel trên màn hình.
+              Mọi chi tiết cơ khí bên trong đều liền lạc. Không một chút xê dịch. Khẳng định độ mới lên đến 99%.
             </p>
           </div>
         </motion.div>

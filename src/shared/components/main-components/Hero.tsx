@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, useMotionTemplate } from 'motion/react';
-import { Flower2, ChevronDown, Aperture, Gem, Sparkles, ShoppingBag, Phone, ShieldCheck } from 'lucide-react';
+import { ChevronDown, Aperture, Gem, Sparkles, ShoppingBag, Phone, ShieldCheck } from 'lucide-react';
 import FrameSequenceCanvas from '@/shared/components/ui/FrameSequenceCanvas';
 import Link from 'next/link';
 
@@ -26,21 +26,19 @@ const Hero = () => {
   const blurValue = useTransform(scrollYProgress, [0, 0.12], [0, 20]);
   const filterText = useMotionTemplate`blur(${blurValue}px)`;
 
-  // Act 2: Phone appearance (fades in as text fades out)
-  const phoneOpacity = useTransform(scrollYProgress, [0.1, 0.15], [0, 1]);
-  const phoneScale = useTransform(scrollYProgress, [0.1, 0.18], [0.9, 1]);
-  // Frame sequence plays from 15% to 85%
-  const frameProgress = useTransform(scrollYProgress, [0.15, 0.85], [0, 1]);
+  // Act 2: Phone appearance (visible almost immediately)
+  const phoneOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
+  const phoneScale = useTransform(scrollYProgress, [0, 0.1], [1.05, 1]);
+  // Frame sequence plays across almost the whole scroll to utilize all 240 frames
+  const frameProgress = useTransform(scrollYProgress, [0, 0.85], [0, 1]);
 
   // Act 2: Feature cards (delicate glassmorphism)
-  const card1Opacity = useTransform(scrollYProgress, [0.25, 0.32, 0.45, 0.52], [0, 1, 1, 0]);
-  const card1Y = useTransform(scrollYProgress, [0.25, 0.32, 0.45, 0.52], [20, 0, 0, -20]);
+  const card1Opacity = useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [0, 1, 1, 0]);
+  const card1Y = useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [20, 0, 0, -20]);
 
-  const card2Opacity = useTransform(scrollYProgress, [0.52, 0.59, 0.72, 0.79], [0, 1, 1, 0]);
-  const card2Y = useTransform(scrollYProgress, [0.52, 0.59, 0.72, 0.79], [20, 0, 0, -20]);
-
-  const card3Opacity = useTransform(scrollYProgress, [0.75, 0.82, 0.95, 1], [0, 1, 1, 0]); // Pushed later so it doesn't overlap early
-  const card3Y = useTransform(scrollYProgress, [0.75, 0.82, 0.95, 1], [20, 0, 0, -20]);
+  // Card 2 runs until the end of the scroll
+  const card2Opacity = useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [0, 1, 1, 0]);
+  const card2Y = useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [20, 0, 0, -20]);
 
   // Scroll indicator fades out fast
   const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
@@ -49,10 +47,10 @@ const Hero = () => {
   const overlayOpacity = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
 
   // Act 3: Phone flies up as scroll exits hero
-  const phoneExitY = useTransform(scrollYProgress, [0.82, 1.0], ['0%', '-30%']);
+  const phoneExitY = useTransform(scrollYProgress, [0.85, 1.0], ['0%', '-30%']);
 
-  // Shared glass Card classes for poetic feel
-  const glassCardClass = "bg-[#1a0b2e]/70 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 sm:p-7 text-white shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_0_32px_rgba(255,255,255,0.05)] will-change-[backdrop-filter,opacity,transform] transform-[translateZ(0)]";
+  // Shared glass Card classes for poetic feel (matching the dark minimal design)
+  const glassCardClass = "bg-[#0b0615]/50 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 sm:p-8 text-white shadow-[0_10px_40px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.03)] w-full sm:w-[340px] max-w-[90vw]";
 
   return (
     <section
@@ -61,128 +59,15 @@ const Hero = () => {
       style={{ height: '500vh' }}
     >
       {/* ── Rich primary-toned background ── */}
-      <div className="sticky top-0 w-full h-screen overflow-hidden bg-[#1a0b2e]">
+      <div className="sticky top-0 w-full h-screen overflow-hidden bg-[#0d0518]">
         
         {/* Rich ambient glow to make the primary tone pop */}
-        <div className="absolute inset-0 pointer-events-none opacity-60">
-          <div className="absolute top-[10%] left-[20%] w-150 h-150 bg-primary/40 rounded-full blur-[200px]" />
-          <div className="absolute bottom-[10%] right-[10%] w-125 h-125 bg-pink-400/30 rounded-full blur-[180px]" />
+        <div className="absolute inset-0 pointer-events-none opacity-50">
+          <div className="absolute top-[10%] left-[20%] w-[50vw] h-[50vh] bg-primary/30 rounded-full blur-[150px]" />
+          <div className="absolute bottom-[10%] right-[10%] w-[40vw] h-[40vh] bg-pink-500/10 rounded-full blur-[150px]" />
         </div>
 
-        {/* ── Decorative floating flowers (visible on initial view, fade with text) ── */}
-        <motion.div
-          style={{ opacity: opacityText }}
-          className="absolute inset-0 pointer-events-none z-10"
-        >
-          {/* Top-left large flower */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-            animate={{ opacity: 0.25, scale: 1, rotate: 0 }}
-            transition={{ duration: 2, ease: 'easeOut', delay: 0.3 }}
-            className="absolute top-[8%] left-[5%] text-pink-300"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-            >
-              <Flower2 size={72} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-
-          {/* Top-right medium flower */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5, rotate: 30 }}
-            animate={{ opacity: 0.18, scale: 1, rotate: 0 }}
-            transition={{ duration: 2.2, ease: 'easeOut', delay: 0.6 }}
-            className="absolute top-[12%] right-[8%] text-primary"
-          >
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
-            >
-              <Flower2 size={52} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-
-          {/* Bottom-left small flower */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 0.15, scale: 1 }}
-            transition={{ duration: 2, ease: 'easeOut', delay: 0.8 }}
-            className="absolute bottom-[18%] left-[10%] text-pink-200"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            >
-              <Flower2 size={38} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-
-          {/* Bottom-right large flower */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5, rotate: 15 }}
-            animate={{ opacity: 0.2, scale: 1, rotate: 0 }}
-            transition={{ duration: 2.5, ease: 'easeOut', delay: 0.5 }}
-            className="absolute bottom-[10%] right-[5%] text-primary"
-          >
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-            >
-              <Flower2 size={64} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-
-          {/* Center-left floating */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 0.12, y: 0 }}
-            transition={{ duration: 2, ease: 'easeOut', delay: 1 }}
-            className="absolute top-[45%] left-[2%] text-pink-300"
-          >
-            <motion.div
-              animate={{ y: [0, -12, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Flower2 size={28} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-
-          {/* Center-right floating */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 0.12, y: 0 }}
-            transition={{ duration: 2, ease: 'easeOut', delay: 0.9 }}
-            className="absolute top-[35%] right-[3%] text-primary"
-          >
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            >
-              <Flower2 size={22} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-
-          {/* Top-center small accent */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 0.1, scale: 1 }}
-            transition={{ duration: 1.5, ease: 'easeOut', delay: 1.2 }}
-            className="absolute top-[5%] left-[48%] text-pink-200"
-          >
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-            >
-              <Flower2 size={18} strokeWidth={0.8} />
-            </motion.div>
-          </motion.div>
-        </motion.div>
-
         {/* ── Contained seamless phone canvas with vignette mask ── */}
-        {/* It scales from 0.9 -> 1 to feel like it emerges from the void.
-            Masking fades the hard edges of the raw image into our custom primary background. */}
         <motion.div
           style={{ 
             opacity: phoneOpacity, 
@@ -191,26 +76,26 @@ const Hero = () => {
             maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
             WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
           }}
-          className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[170%] sm:left-0 sm:right-0 sm:w-full sm:translate-x-0 z-10 flex items-center justify-center pointer-events-none mix-blend-screen"
+          className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[150%] sm:max-w-[1200px] sm:left-1/2 sm:w-full sm:translate-x-[-50%] z-10 flex items-center justify-center pointer-events-none mix-blend-screen"
         >
           {/* Full width/height so contain-fit displays the phone big and centered */}
           <FrameSequenceCanvas
             folder="/assets/3d-frame"
-            prefix="ezgif-frame-"
-            startIndex={26}
-            frameCount={215}
+            prefix="frame-"
+            startIndex={1}
+            frameCount={240}
             scrollProgress={frameProgress}
-            padLength={3}
-            className="w-full h-full opacity-90"
+            padLength={1}
+            className="w-full h-full opacity-100"
           />
         </motion.div>
 
         {/* ── Elegant Text section (appears first, then fades) ── */}
         <motion.div
-          style={{
-            y: yText,
-            opacity: opacityText,
-            filter: filterText,
+           style={{
+            y: useTransform(scrollYProgress, [0, 0.1], ['0%', '-15%']),
+            opacity: useTransform(scrollYProgress, [0, 0.08], [1, 0]),
+            filter: useMotionTemplate`blur(${useTransform(scrollYProgress, [0, 0.08], [0, 20])}px)`,
           }}
           className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4"
         >
@@ -221,21 +106,21 @@ const Hero = () => {
             className="flex flex-col items-center"
           >
             {/* Pill badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/3 backdrop-blur-md border border-white/10 text-white/60 font-light text-xs sm:text-sm mb-6 shadow-sm">
-              <ShieldCheck size={13} className="text-emerald-400" />
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white/70 font-light text-xs sm:text-sm mb-6 shadow-sm">
+              <ShieldCheck size={14} className="text-emerald-400" />
               Kiểm định 30 điểm · Bảo hành 12 tháng
             </div>
 
             {/* Title */}
-            <h1 className="font-display text-6xl sm:text-8xl md:text-9xl text-white font-medium tracking-tighter mb-4 drop-shadow-2xl">
-              Jon Táo
+            <h1 className="font-display text-4xl sm:text-6xl md:text-[5rem] text-white font-medium tracking-tight mb-4 drop-shadow-2xl max-w-4xl leading-[1.1]">
+              Không chỉ là công nghệ.
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-xl md:text-2xl text-white/50 max-w-xl mx-auto leading-relaxed font-light mb-8 sm:mb-10">
-              Mỗi chiếc iPhone đều qua kiểm định kỹ lưỡng —{' '}
-              <span className="font-script font-normal text-transparent bg-clip-text bg-linear-to-r from-emerald-300 to-primary text-[1.35em] tracking-normal leading-normal whitespace-nowrap">
-                yên tâm như mới.
+            <p className="text-lg sm:text-xl md:text-2xl text-white/50 max-w-xl mx-auto leading-relaxed font-light mb-8 sm:mb-10">
+              Đó là sự{' '}
+              <span className="font-serif font-medium text-transparent bg-clip-text bg-linear-to-r from-emerald-200 via-primary to-pink-300 text-[1.4em] tracking-tight leading-normal whitespace-nowrap">
+                Nguyên Bản.
               </span>
             </p>
 
@@ -248,83 +133,47 @@ const Hero = () => {
             >
               <Link
                 href="/products"
-                className="group inline-flex items-center gap-2.5 bg-primary text-white px-7 sm:px-8 py-3 sm:py-3.5 rounded-full font-medium text-sm sm:text-base transition-all shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:bg-primary-hover hover:-translate-y-0.5"
+                className="group inline-flex items-center gap-2.5 bg-white text-black px-7 sm:px-8 py-3.5 rounded-full font-medium text-sm sm:text-base transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] hover:scale-105"
               >
                 <ShoppingBag size={18} />
                 Khám phá sản phẩm
               </Link>
-              <a
-                href="tel:0909000000"
-                className="inline-flex items-center gap-2.5 px-7 sm:px-8 py-3 sm:py-3.5 rounded-full font-medium text-sm sm:text-base text-white/70 border border-white/15 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:text-white transition-all hover:-translate-y-0.5"
-              >
-                <Phone size={16} />
-                Liên hệ ngay
-              </a>
-            </motion.div>
-
-            {/* Trust micro-copy */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.2, delay: 1.1 }}
-              className="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-1.5 mt-2 text-white/30 text-xs"
-            >
-              {['Bảo hành 12 tháng', 'Kiểm tra 30 điểm', 'Đổi trả 7 ngày'].map((t) => (
-                <span key={t} className="flex items-center gap-1.5">
-                  <span className="w-1 h-1 rounded-full bg-primary/60 inline-block" />
-                  {t}
-                </span>
-              ))}
             </motion.div>
           </motion.div>
         </motion.div>
 
         {/* ── Feature overlay cards (Delicate Glassmorphism) ── */}
         
-        {/* Card 1 — Camera */}
+        {/* Card 1 — Titanium Design (Matches bottom frame first 120 frames) */}
         <motion.div
-          style={{ opacity: card1Opacity, y: card1Y }}
-          className="absolute z-30 left-4 sm:left-[8%] top-[40%] -translate-y-1/2 max-w-60 sm:max-w-xs will-change-[opacity,transform] pointer-events-none"
+           style={{ opacity: useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [0, 1, 1, 0]), 
+                    y: useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [20, 0, 0, -20]) }}
+          className="absolute z-30 left-4 right-4 sm:right-auto sm:left-[10%] top-[25%] sm:top-[45%] -translate-y-1/2 will-change-[opacity,transform] pointer-events-none"
         >
           <div className={glassCardClass}>
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-4 border border-white/20">
-              <Aperture size={20} className="text-white" />
+            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-5 border border-white/10 shadow-inner">
+              <Gem size={18} className="text-white/80" />
             </div>
-            <h3 className="font-display text-base sm:text-lg text-white/90 font-medium mb-2 tracking-wide">Tuyệt Tác Ống Kính</h3>
-            <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light">
+            <h3 className="font-serif text-lg sm:text-xl text-white font-medium mb-2 tracking-tight">Dáng Vẻ Tinh Tế</h3>
+            <p className="text-white/50 text-sm sm:text-base leading-relaxed font-light">
+              Khung viền Titanium nguyên khối. Đẳng cấp nhẹ nhàng và bền vững vượt thời gian.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Card 2 — Camera (Matches camera array after frame 120) */}
+        <motion.div
+           style={{ opacity: useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [0, 1, 1, 0]), 
+                    y: useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [20, 0, 0, -20]) }}
+          className="absolute z-30 left-4 right-4 sm:left-auto sm:right-[10%] top-[75%] sm:top-[55%] -translate-y-1/2 will-change-[opacity,transform] pointer-events-none"
+        >
+          <div className={glassCardClass}>
+            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-5 border border-white/10 shadow-inner">
+              <Aperture size={18} className="text-white/80" />
+            </div>
+            <h3 className="font-serif text-lg sm:text-xl text-white font-medium mb-2 tracking-tight">Tuyệt Tác Ống Kính</h3>
+            <p className="text-white/50 text-sm sm:text-base leading-relaxed font-light">
               Hệ thống 3 camera 48MP. Thu trọn màn đêm kỳ ảo vào trong khung hình.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Card 2 — Titanium Design */}
-        <motion.div
-          style={{ opacity: card2Opacity, y: card2Y }}
-          className="absolute z-30 right-4 sm:right-[8%] top-[60%] -translate-y-1/2 max-w-60 sm:max-w-xs text-right sm:text-left flex flex-col items-end sm:items-start will-change-[opacity,transform] pointer-events-none"
-        >
-          <div className={glassCardClass}>
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-4 border border-white/20 ml-auto sm:ml-0">
-              <Gem size={20} className="text-white" />
-            </div>
-            <h3 className="font-display text-base sm:text-lg text-white/90 font-medium mb-2 tracking-wide">Dáng Vẻ Tinh Tế</h3>
-            <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light">
-              Khung viền Titanium nguyên khối. Đẳng cấp, nhẹ nhàng và bền vững vượt thời gian.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Card 3 — Display */}
-        <motion.div
-          style={{ opacity: card3Opacity, y: card3Y }}
-          className="absolute z-30 left-1/2 -translate-x-1/2 bottom-[12%] max-w-60 sm:max-w-xs will-change-[opacity,transform] pointer-events-none"
-        >
-          <div className={`${glassCardClass} text-center flex flex-col items-center`}>
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-4 border border-white/20">
-              <Sparkles size={20} className="text-white" />
-            </div>
-            <h3 className="font-display text-base sm:text-lg text-white/90 font-medium mb-2 tracking-wide">Trí Tuệ Apple AI</h3>
-            <p className="text-white/40 text-xs sm:text-sm leading-relaxed font-light">
-              Apple Intelligence viết, tóm tắt, sáng tác — trợ lý thông minh riêng, hiểu ngữ cảnh và bảo vệ quyền riêng tư tuyệt đối.
             </p>
           </div>
         </motion.div>

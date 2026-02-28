@@ -41,12 +41,31 @@ const Products = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
-          <ProductCard name="iPhone 15 Pro Max" color="Titan Tự Nhiên" price="29.990.000đ" image="https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=600&auto=format&fit=crop" badge="Mới 100%" tags={['Chính hãng', 'Pin 100%', 'Bảo hành 12T']} href="/products/iphone-15-pro-max" />
-          <ProductCard name="iPhone 14 Pro Max" color="Tím Deep Purple" price="18.590.000đ" image="https://images.unsplash.com/photo-1678652197831-2d180705cd2c?q=80&w=600&auto=format&fit=crop" badge="Cũ 99%" tags={['Nguyên bản', 'Pin 92%', 'BH 6 tháng']} featured={true} href="/products/iphone-14-pro-max" />
-          <ProductCard name="AirPods Pro 2" color="Trắng" price="5.490.000đ" image="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?q=80&w=600&auto=format&fit=crop" badge="Phụ kiện" tags={['Chính hãng', 'Chống ồn ANC', 'BH 12T']} href="/products/airpods-pro-2" />
-          <ProductCard name="Ốp lưng Magsafe" color="Trong suốt" price="490.000đ" image="https://images.unsplash.com/photo-1603313011101-320f26a4f6f6?q=80&w=600&auto=format&fit=crop" badge="Phụ kiện" tags={['Magsafe', 'Chống xước', 'Fit chuẩn']} href="/products/op-lung-magsafe" />
-        </div>
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: 0.15 }
+            }
+          }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8"
+        >
+          <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.6, ease: 'easeOut' }}>
+            <ProductCard name="iPhone 15 Pro Max" color="Titan Tự Nhiên" price="29.990.000đ" image="https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=600&auto=format&fit=crop" badge="Mới 100%" tags={['Chính hãng', 'Pin 100%', 'Bảo hành 12T']} href="/products/iphone-15-pro-max" />
+          </motion.div>
+          <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.6, ease: 'easeOut' }}>
+            <ProductCard name="iPhone 14 Pro Max" color="Tím Deep Purple" price="18.590.000đ" image="https://images.unsplash.com/photo-1678652197831-2d180705cd2c?q=80&w=600&auto=format&fit=crop" badge="Cũ 99%" tags={['Nguyên bản', 'Pin 92%', 'BH 6 tháng']} featured={true} href="/products/iphone-14-pro-max" />
+          </motion.div>
+          <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.6, ease: 'easeOut' }}>
+            <ProductCard name="AirPods Pro 2" color="Trắng" price="5.490.000đ" image="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?q=80&w=600&auto=format&fit=crop" badge="Phụ kiện" tags={['Chính hãng', 'Chống ồn ANC', 'BH 12T']} href="/products/airpods-pro-2" />
+          </motion.div>
+          <motion.div variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.6, ease: 'easeOut' }}>
+            <ProductCard name="Ốp lưng Magsafe" color="Trong suốt" price="490.000đ" image="https://images.unsplash.com/photo-1603313011101-320f26a4f6f6?q=80&w=600&auto=format&fit=crop" badge="Phụ kiện" tags={['Magsafe', 'Chống xước', 'Fit chuẩn']} href="/products/op-lung-magsafe" />
+          </motion.div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
