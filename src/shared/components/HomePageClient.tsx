@@ -21,7 +21,19 @@ import GradientBridge from '@/shared/components/ui/GradientBridge';
  * then reveals the full page with a smooth transition.
  */
 const HomePageClient = () => {
-  const [introComplete, setIntroComplete] = useState(false);
+  const [introComplete, setIntroComplete] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('introPlayed') === 'true';
+    }
+    return false;
+  });
+
+  const handleIntroComplete = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('introPlayed', 'true');
+    }
+    setIntroComplete(true);
+  };
 
   // Preload the first few Hero frame sequence images (critical for first impression)
   const criticalImages = useMemo(() => {
@@ -40,7 +52,7 @@ const HomePageClient = () => {
     <>
       {!introComplete && (
         <IntroLoader
-          onComplete={() => setIntroComplete(true)}
+          onComplete={handleIntroComplete}
           imagesToPreload={criticalImages}
         />
       )}

@@ -61,24 +61,41 @@ export function useFrameSequence({
     let cancelled = false;
     let loadedCount = 0;
     const images: HTMLImageElement[] = new Array(frameCount);
+    
+    // Check if device is mobile to apply optimization
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
     for (let i = 0; i < frameCount; i++) {
+      // Mobile optimization: skip loading 1 frame in every 3 (e.g., skip index 2, 5, 8...)
+      if (isMobile && i % 3 === 2) {
+        loadedCount++;
+        setProgress(loadedCount / frameCount);
+        if (loadedCount === frameCount) setLoaded(true);
+        continue; // Skip loading this image to improve speed and reduce memory on mobile
+      }
+
       const img = new Image();
-      img.src = frameUrl(i);
-      img.onload = () => {
-        if (cancelled) return;
+      let handled = false;
+
+      const handleLoad = () => {
+        if (handled || cancelled) return;
+        handled = true;
         loadedCount++;
         setProgress(loadedCount / frameCount);
         if (loadedCount === frameCount) {
           setLoaded(true);
         }
       };
-      img.onerror = () => {
-        if (cancelled) return;
-        loadedCount++;
-        setProgress(loadedCount / frameCount);
-        if (loadedCount === frameCount) setLoaded(true);
-      };
+
+      img.onload = handleLoad;
+      img.onerror = handleLoad;
+      img.src = frameUrl(i);
+
+      // If already cached and complete right after assignment
+      if (img.complete) {
+        handleLoad();
+      }
+
       images[i] = img;
     }
 
@@ -96,7 +113,27 @@ export function useFrameSequence({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const img = imagesRef.current[index];
+    let img = imagesRef.current[index];
+    
+    // If exact frame skipped or incomplete, fallback to the nearest loaded previous frame
+    if (!img || !img.complete) {
+      for (let j = index - 1; j >= 0; j--) {
+        if (imagesRef.current[j] && imagesRef.current[j].complete) {
+          img = imagesRef.current[j];
+          break;
+        }
+      }
+    }
+    // Try nearest next frame if no previous frame is found
+    if (!img || !img.complete) {
+      for (let j = index + 1; j < imagesRef.current.length; j++) {
+        if (imagesRef.current[j] && imagesRef.current[j].complete) {
+          img = imagesRef.current[j];
+          break;
+        }
+      }
+    }
+
     if (!img || !img.complete || img.naturalWidth === 0) return;
 
     // Match canvas pixel size to its CSS display size for sharpness
