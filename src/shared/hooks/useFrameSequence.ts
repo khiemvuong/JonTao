@@ -3,6 +3,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { MotionValue, useMotionValueEvent } from 'motion/react';
 
+// --- GLOBAL MEMORY CACHE ---
+// Giữ lại các ảnh đã tải trên RAM (JS Memory) để khi qua trang khác rồi quay lại, 
+// trình duyệt không cần gọi lại cache ổ cứng, ảnh sẽ hiện ngay lập tức không có độ trễ.
+const globalFrameCache: Record<string, HTMLImageElement[]> = {};
+const globalLoadedState: Record<string, boolean> = {};
+
 interface UseFrameSequenceOptions {
   /** Folder path under /public, e.g. "/assets/3d-frame" */
   folder: string;
@@ -43,8 +49,10 @@ export function useFrameSequence({
   const currentFrameRef = useRef(0);
   const rafRef = useRef<number | null>(null);
 
-  const [loaded, setLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const cacheKey = `${folder}-${prefix}-${frameCount}`;
+
+  const [loaded, setLoaded] = useState(() => !!globalLoadedState[cacheKey]);
+  const [progress, setProgress] = useState(() => globalLoadedState[cacheKey] ? 1 : 0);
 
   // Build the URL for a given frame index (1-based)
   const frameUrl = useCallback(
@@ -58,6 +66,14 @@ export function useFrameSequence({
 
   // Preload all images
   useEffect(() => {
+    // Nếu toàn bộ sequence này đã được nạp vào memory từ trước, tái sử dụng luôn
+    if (globalLoadedState[cacheKey] && globalFrameCache[cacheKey]) {
+      imagesRef.current = globalFrameCache[cacheKey];
+      setLoaded(true);
+      setProgress(1);
+      return;
+    }
+
     let cancelled = false;
     let loadedCount = 0;
     const images: HTMLImageElement[] = new Array(frameCount);
@@ -83,6 +99,8 @@ export function useFrameSequence({
         loadedCount++;
         setProgress(loadedCount / frameCount);
         if (loadedCount === frameCount) {
+          globalLoadedState[cacheKey] = true;
+          globalFrameCache[cacheKey] = images;
           setLoaded(true);
         }
       };
@@ -104,7 +122,7 @@ export function useFrameSequence({
     return () => {
       cancelled = true;
     };
-  }, [frameCount, frameUrl]);
+  }, [frameCount, frameUrl, cacheKey]);
 
   // Draw the current frame on canvas (contain-fit, preserving aspect ratio)
   const drawFrame = useCallback((index: number) => {
