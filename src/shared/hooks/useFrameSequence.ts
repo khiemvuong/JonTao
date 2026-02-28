@@ -52,6 +52,7 @@ export function useFrameSequence({
   const cacheKey = `${folder}-${prefix}-${frameCount}`;
 
   const [loaded, setLoaded] = useState(() => !!globalLoadedState[cacheKey]);
+  const [firstFrameLoaded, setFirstFrameLoaded] = useState(() => !!globalLoadedState[cacheKey]);
   const [progress, setProgress] = useState(() => globalLoadedState[cacheKey] ? 1 : 0);
 
   // Build the URL for a given frame index (1-based)
@@ -70,6 +71,7 @@ export function useFrameSequence({
     if (globalLoadedState[cacheKey] && globalFrameCache[cacheKey]) {
       imagesRef.current = globalFrameCache[cacheKey];
       setLoaded(true);
+      setFirstFrameLoaded(true);
       setProgress(1);
       return;
     }
@@ -97,6 +99,12 @@ export function useFrameSequence({
         if (handled || cancelled) return;
         handled = true;
         loadedCount++;
+        
+        // Show canvas as soon as we have at least 1 image loaded
+        if (loadedCount >= 1) {
+          setFirstFrameLoaded(true);
+        }
+
         setProgress(loadedCount / frameCount);
         if (loadedCount === frameCount) {
           globalLoadedState[cacheKey] = true;
@@ -196,10 +204,10 @@ export function useFrameSequence({
 
   // Draw first frame once loaded
   useEffect(() => {
-    if (loaded) {
-      drawFrame(0);
+    if (firstFrameLoaded) {
+      drawFrame(currentFrameRef.current !== 0 ? currentFrameRef.current : 0);
     }
-  }, [loaded, drawFrame]);
+  }, [firstFrameLoaded, drawFrame]);
 
   // Cleanup rAF
   useEffect(() => {
@@ -208,5 +216,5 @@ export function useFrameSequence({
     };
   }, []);
 
-  return { canvasRef, loaded, progress };
+  return { canvasRef, loaded, firstFrameLoaded, progress };
 }

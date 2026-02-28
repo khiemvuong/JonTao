@@ -39,7 +39,7 @@ const FrameSequenceCanvas = ({
   hideSkeleton = false,
   className = '',
 }: FrameSequenceCanvasProps) => {
-  const { canvasRef, loaded, progress } = useFrameSequence({
+  const { canvasRef, loaded, firstFrameLoaded, progress } = useFrameSequence({
     folder,
     prefix,
     frameCount,
@@ -55,13 +55,13 @@ const FrameSequenceCanvas = ({
       <canvas
         ref={canvasRef}
         className={`w-full h-full object-contain transition-opacity duration-700 ${
-          loaded ? 'opacity-100' : 'opacity-0'
+          firstFrameLoaded ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ display: 'block' }}
       />
 
       {/* Loading skeleton */}
-      {!hideSkeleton && !loaded && (
+      {!hideSkeleton && !firstFrameLoaded && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
           {/* Pulsing placeholder */}
           <div className="w-40 h-72 sm:w-56 sm:h-96 rounded-[2.5rem] bg-primary/10 animate-pulse" />
