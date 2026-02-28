@@ -18,6 +18,8 @@ interface FrameSequenceCanvasProps {
   padLength?: number;
   /** File extension */
   ext?: string;
+  /** Hide loading skeleton completely */
+  hideSkeleton?: boolean;
   /** CSS classes for the wrapper div */
   className?: string;
 }
@@ -34,6 +36,7 @@ const FrameSequenceCanvas = ({
   startIndex = 1,
   padLength = 3,
   ext = 'png',
+  hideSkeleton = false,
   className = '',
 }: FrameSequenceCanvasProps) => {
   const { canvasRef, loaded, progress } = useFrameSequence({
@@ -58,7 +61,7 @@ const FrameSequenceCanvas = ({
       />
 
       {/* Loading skeleton */}
-      {!loaded && (
+      {!hideSkeleton && !loaded && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
           {/* Pulsing placeholder */}
           <div className="w-40 h-72 sm:w-56 sm:h-96 rounded-[2.5rem] bg-primary/10 animate-pulse" />

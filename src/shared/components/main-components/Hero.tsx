@@ -86,6 +86,7 @@ const Hero = () => {
             frameCount={240}
             scrollProgress={frameProgress}
             padLength={1}
+            hideSkeleton
             className="w-full h-full opacity-100"
           />
         </motion.div>

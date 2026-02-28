@@ -26,8 +26,8 @@ const HomePageClient = () => {
   // Preload the first few Hero frame sequence images (critical for first impression)
   const criticalImages = useMemo(() => {
     const images: string[] = [];
-    // Preload first 10 frames of the Hero sequence for instant display after intro
-    for (let i = 0; i < 10; i++) {
+    // Preload all 100 frames of the Hero sequence
+    for (let i = 0; i < 100; i++) {
       const idx = String(1 + i);
       images.push(`/assets/3d-frame/frame-${idx}.png`);
     }
