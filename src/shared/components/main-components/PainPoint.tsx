@@ -74,7 +74,7 @@ const PainPoint = () => {
         </motion.div>
 
         {/* ── Vertical Timeline Progress ── */}
-        <div className="absolute left-[5%] sm:left-12 top-1/2 -translate-y-1/2 h-1/2 flex-col items-center z-40 hidden sm:flex">
+        <div className="absolute left-[3%] sm:left-12 top-1/2 -translate-y-1/2 h-1/2 flex flex-col items-center z-40">
           {/* Track background */}
           <div className="absolute top-0 bottom-0 w-px bg-white/10" />
           

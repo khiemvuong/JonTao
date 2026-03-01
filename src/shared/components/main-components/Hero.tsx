@@ -120,7 +120,7 @@ const Hero = () => {
                   transform: 'scale(1.2) rotate(-20deg)',
                   opacity: 0.08 
                 }}
-                className="absolute w-64 h-64 sm:w-96 sm:h-96 object-contain blur-[2px] sm:blur-[3px] hidden sm:block"
+                className="absolute w-40 h-40 sm:w-96 sm:h-96 object-contain blur-[2px] sm:blur-[3px]"
               />
               <img
                 src="/assets/images/branch.png"
@@ -130,7 +130,7 @@ const Hero = () => {
                   transform: 'scale(1.5) rotate(160deg) scaleX(-1)',
                   opacity: 0.08 
                 }}
-                className="absolute w-64 h-64 sm:w-96 sm:h-96 object-contain blur-[2px] sm:blur-[3px] hidden sm:block"
+                className="absolute w-48 h-48 sm:w-96 sm:h-96 object-contain blur-[2px] sm:blur-[3px]"
               />
             </>
           )}
