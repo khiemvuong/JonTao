@@ -1,16 +1,12 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useMotionTemplate } from 'motion/react';
-import { ChevronDown, Aperture, Gem, Sparkles, ShoppingBag, Phone, ShieldCheck } from 'lucide-react';
+import { motion } from 'motion/react';
+import { ChevronDown, ShoppingBag, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
 /**
- * Hero — Poetic, seamless primary glassmorphism.
- * 
- * Layout: Full-screen canvas that blends perfectly into a rich primary-toned background.
- * Text appears first, fades out completely BEFORE the phone starts dominating and rotating.
- * Feature cards use delicate translucent glassmorphism.
+ * Hero — Static brand statement with cinematic video background.
  */
 const Hero = () => {
   const [mounted, setMounted] = useState(false);
@@ -19,51 +15,14 @@ const Hero = () => {
   }, []);
 
   const sectionRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end end'],
-  });
-
-  // Act 1: Text
-  const opacityText = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
-  const yText = useTransform(scrollYProgress, [0, 0.15], ['0%', '-15%']);
-  const blurValue = useTransform(scrollYProgress, [0, 0.12], [0, 20]);
-  const filterText = useMotionTemplate`blur(${blurValue}px)`;
-
-  // Act 2: Phone appearance (visible immediately, scales down)
-  const phoneOpacity = useTransform(scrollYProgress, [0, 0.1], [0.5, 1]);
-  const phoneScale = useTransform(scrollYProgress, [0, 0.15], [1.1, 1]);
-
-  // Act 2: Feature cards (delicate glassmorphism)
-  const card1Opacity = useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [0, 1, 1, 0]);
-  const card1Y = useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [20, 0, 0, -20]);
-
-  // Card 2 runs until the end of the scroll
-  const card2Opacity = useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [0, 1, 1, 0]);
-  const card2Y = useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [20, 0, 0, -20]);
-
-  // Scroll indicator fades out fast
-  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
-
-  // Act 3: Bottom transition to Announcements
-  const overlayOpacity = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
-
-  // Scroll Progress Bar
-  const progressBarWidth = useTransform(scrollYProgress, [0, 0.95], ['0%', '100%']);
-
-  // Act 3: Phone flies up as scroll exits hero
-  const phoneExitY = useTransform(scrollYProgress, [0.85, 1.0], ['0%', '-30%']);
-
-  // Shared glass Card classes for poetic feel (matching the dark minimal design)
-  const glassCardClass = "bg-[#0b0615]/50 backdrop-blur-2xl border border-white/5 rounded-[2rem] p-6 sm:p-8 text-white shadow-[0_10px_40px_rgba(0,0,0,0.5),inset_0_0_20px_rgba(255,255,255,0.03)] w-full sm:w-[340px] max-w-[90vw]";
 
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-[#1a0b2e] h-[300vh] sm:h-[500vh]"
+      className="relative w-full bg-[#1a0b2e] h-screen"
     >
       {/* ── Rich primary-toned background ── */}
-      <div className="sticky top-0 w-full h-screen overflow-hidden bg-[#0d0518]">
+      <div className="relative w-full h-full overflow-hidden bg-[#0d0518]">
         
         {/* Rich ambient glow to make the primary tone pop */}
         <div className="absolute inset-0 pointer-events-none opacity-40 sm:opacity-50">
@@ -139,20 +98,19 @@ const Hero = () => {
         {/* ── Contained seamless phone canvas with vignette mask ── */}
         {mounted && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-            {/* Ambient Glow behind the video - Optimized for mobile */}
+            {/* Ambient Glow behind the video */}
             <div className="absolute w-[80vw] sm:w-[60vw] h-[40vh] sm:h-[60vh] bg-primary/20 rounded-full blur-[80px] sm:blur-[150px] opacity-40 animate-pulse" />
             
             <motion.div
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
               style={{ 
-                opacity: phoneOpacity, 
-                scale: phoneScale,
-                y: phoneExitY,
                 maskImage: 'radial-gradient(ellipse at center, black 15%, transparent 75%)',
                 WebkitMaskImage: 'radial-gradient(ellipse at center, black 15%, transparent 75%)'
               }}
               className="w-[110%] sm:w-full sm:max-w-[1200px] z-10 flex items-center justify-center mix-blend-screen will-change-[transform,opacity]"
             >
-              {/* Full width/height so contain-fit displays the phone big and centered */}
               <video
                 suppressHydrationWarning
                 src="/assets/video/hero-video.mp4"
@@ -166,15 +124,8 @@ const Hero = () => {
           </div>
         )}
 
-        {/* ── Elegant Text section (appears first, then fades) ── */}
-        <motion.div
-           style={{
-            y: useTransform(scrollYProgress, [0, 0.1], ['0%', '-10%']),
-            opacity: useTransform(scrollYProgress, [0, 0.08], [1, 0]),
-            filter: useMotionTemplate`blur(${useTransform(scrollYProgress, [0, 0.08], [0, 15])}px)`,
-          }}
-          className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4"
-        >
+        {/* ── Elegant Text section ── */}
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -222,47 +173,16 @@ const Hero = () => {
               </Link>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* ── Feature overlay cards (Delicate Glassmorphism) ── */}
         
-        {/* Card 1 — Titanium Design (Matches bottom frame first 120 frames) */}
-        <motion.div
-           style={{ opacity: useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [0, 1, 1, 0]), 
-                    y: useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [20, 0, 0, -20]) }}
-          className="absolute z-30 left-4 right-4 sm:right-auto sm:left-[10%] top-[25%] sm:top-[45%] -translate-y-1/2 will-change-[opacity,transform] pointer-events-none"
-        >
-          <div className={glassCardClass}>
-            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-5 border border-white/10 shadow-inner">
-              <Gem size={18} className="text-white/80" />
-            </div>
-            <h3 className="font-serif text-lg sm:text-xl text-white font-medium mb-2 tracking-tight">Dáng Vẻ Tinh Tế</h3>
-            <p className="text-white/50 text-sm sm:text-base leading-relaxed font-light">
-              Khung viền Titanium nguyên khối. Đẳng cấp nhẹ nhàng và bền vững vượt thời gian.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Card 2 — Camera (Matches camera array after frame 120) */}
-        <motion.div
-           style={{ opacity: useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [0, 1, 1, 0]), 
-                    y: useTransform(scrollYProgress, [0.45, 0.52, 0.95, 1], [20, 0, 0, -20]) }}
-          className="absolute z-30 left-4 right-4 sm:left-auto sm:right-[10%] top-[75%] sm:top-[55%] -translate-y-1/2 will-change-[opacity,transform] pointer-events-none"
-        >
-          <div className={glassCardClass}>
-            <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-5 border border-white/10 shadow-inner">
-              <Aperture size={18} className="text-white/80" />
-            </div>
-            <h3 className="font-serif text-lg sm:text-xl text-white font-medium mb-2 tracking-tight">Tuyệt Tác Ống Kính</h3>
-            <p className="text-white/50 text-sm sm:text-base leading-relaxed font-light">
-              Hệ thống 3 camera 48MP. Thu trọn màn đêm kỳ ảo vào trong khung hình.
-            </p>
-          </div>
-        </motion.div>
 
         {/* ── Scroll indicator ── */}
         <motion.div
-          style={{ opacity: scrollIndicatorOpacity }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 pointer-events-none"
         >
           <span className="text-[10px] sm:text-xs text-white/30 uppercase tracking-[0.3em] font-light">
@@ -275,20 +195,6 @@ const Hero = () => {
             <ChevronDown size={16} className="text-white/20" />
           </motion.div>
         </motion.div>
-
-        {/* ── Transition overlay: fades hero into same dark as bridge ── */}
-        <motion.div
-          style={{ opacity: overlayOpacity }}
-          className="absolute inset-0 z-50 pointer-events-none bg-[#1a0b2e]"
-        />
-
-        {/* ── Scroll Progress Bar ── */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 sm:h-1.5 bg-white/10 z-50">
-          <motion.div 
-            className="h-full bg-linear-to-r from-emerald-400 via-primary to-pink-500 rounded-r-full shadow-[0_0_10px_rgba(168,117,210,0.5)]"
-            style={{ width: progressBarWidth }}
-          />
-        </div>
       </div>
     </section>
   );

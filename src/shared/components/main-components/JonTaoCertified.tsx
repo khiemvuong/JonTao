@@ -18,21 +18,21 @@ const JonTaoCertified = () => {
         transition={{ duration: 0.8 }}
         className="relative z-10 flex flex-col items-center text-center px-4"
       >
-        <div className="mb-8 relative w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center group cursor-pointer">
+        <div className="mb-8 relative w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center group">
           {/* Outer Rotating Text Ring */}
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-            className="absolute inset-[-10px] sm:inset-[-20px]"
+            className="absolute inset-[-18px] sm:inset-[-25px]"
           >
-            <svg viewBox="0 0 200 200" className="w-full h-full text-yellow-500/40">
+            <svg viewBox="0 0 200 200" className="w-full h-full text-yellow-500/40 translate-z-0">
               <defs>
                 <path
                   id="textPath"
-                  d="M 100, 100 m -85, 0 a 85,85 0 1,1 170,0 a 85,85 0 1,1 -170,0"
+                  d="M 100, 100 m -90, 0 a 90,90 0 1,1 180,0 a 90,90 0 1,1 -180,0"
                 />
               </defs>
-              <text fill="currentColor" className="text-[12.5px] font-medium tracking-[0.25em] uppercase">
+              <text fill="currentColor" className="text-[11px] font-medium tracking-[0.2em] uppercase">
                 <textPath href="#textPath" startOffset="0%">
                    ★ JONTAO CERTIFIED ★ 30-POINT INSPECTION ★ ORIGINAL QUALITY ★ JONTAO CERTIFIED ★ 30-POINT INSPECTION ★ ORIGINAL QUALITY 
                 </textPath>
@@ -50,8 +50,8 @@ const JonTaoCertified = () => {
             <div className="absolute inset-2 sm:inset-3 border border-yellow-500/10 rounded-full" />
 
             {/* Apple Icon & Text */}
-            <div className="z-10 flex flex-col items-center transition-transform duration-500 group-hover:scale-110">
-              <Apple className="w-12 h-12 sm:w-16 sm:h-16 text-yellow-500 drop-shadow-[0_2px_15px_rgba(234,179,8,0.3)] mb-1 sm:mb-2" fill="currentColor" strokeWidth={1} />
+            <div className="z-10 flex flex-col items-center">
+              <Apple className="w-12 h-12 sm:w-16 sm:h-16 text-yellow-500 drop-shadow-[0_2px_15px_rgba(234,179,8,0.3)] mb-1 sm:mb-2 transition-transform duration-500 group-hover:scale-110" fill="currentColor" strokeWidth={1} />
               <div className="text-center mt-1">
                 <div className="text-xs sm:text-sm font-display tracking-[0.25em] text-yellow-400 font-bold uppercase drop-shadow">Jon Táo</div>
                 <div className="text-[9px] sm:text-[10px] tracking-[0.3em] text-yellow-500/60 uppercase mt-0.5 font-light">Certified</div>
