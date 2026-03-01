@@ -15,11 +15,11 @@ import Logo from '@/shared/components/ui/Logo';
 interface IntroLoaderProps {
   /** Called when the intro is done and page should be revealed */
   onComplete: () => void;
-  /** Critical image URLs to preload */
-  imagesToPreload?: string[];
+  /** Critical asset URLs (images/videos) to preload */
+  assetsToPreload?: string[];
 }
 
-const IntroLoader = ({ onComplete, imagesToPreload = [] }: IntroLoaderProps) => {
+const IntroLoader = ({ onComplete, assetsToPreload = [] }: IntroLoaderProps) => {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -42,8 +42,8 @@ const IntroLoader = ({ onComplete, imagesToPreload = [] }: IntroLoaderProps) => 
       if (!cancelled) finish();
     }, MAX_TIMEOUT);
 
-    if (imagesToPreload.length === 0) {
-      // No images to preload — just show branding
+    if (assetsToPreload.length === 0) {
+      // No assets to preload — just show branding
       const fakeProgress = setInterval(() => {
         if (cancelled) return;
         setProgress((p) => Math.min(p + 0.15, 1));
@@ -53,7 +53,8 @@ const IntroLoader = ({ onComplete, imagesToPreload = [] }: IntroLoaderProps) => 
         if (!cancelled) {
           clearInterval(fakeProgress);
           setProgress(1);
-          finish();
+          setDone(true);
+          setTimeout(onComplete, 900);
         }
       }, MIN_DISPLAY);
 
@@ -64,16 +65,16 @@ const IntroLoader = ({ onComplete, imagesToPreload = [] }: IntroLoaderProps) => 
       };
     }
 
-    // Preload images
-    let loaded = 0;
-    const total = imagesToPreload.length;
+    // Preload assets
+    let loadedCount = 0;
+    const totalCount = assetsToPreload.length;
 
-    const onImageDone = () => {
+    const onAssetDone = () => {
       if (cancelled) return;
-      loaded++;
-      setProgress(loaded / total);
+      loadedCount++;
+      setProgress(loadedCount / totalCount);
 
-      if (loaded >= total) {
+      if (loadedCount >= totalCount) {
         const elapsed = Date.now() - startTime;
         const remaining = Math.max(0, MIN_DISPLAY - elapsed);
         setTimeout(() => {
@@ -82,18 +83,26 @@ const IntroLoader = ({ onComplete, imagesToPreload = [] }: IntroLoaderProps) => 
       }
     };
 
-    imagesToPreload.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = onImageDone;
-      img.onerror = onImageDone;
+    assetsToPreload.forEach((src) => {
+      if (src.endsWith('.mp4')) {
+        // Video preloading via fetch to ensure it's in the cache
+        fetch(src)
+          .then(() => onAssetDone())
+          .catch(() => onAssetDone()); // Treat error as "done" so loader doesn't hang
+      } else {
+        // Standard image preloading
+        const img = new Image();
+        img.src = src;
+        img.onload = onAssetDone;
+        img.onerror = onAssetDone;
+      }
     });
 
     return () => {
       cancelled = true;
       clearTimeout(safetyTimer);
     };
-  }, [imagesToPreload, finish]);
+  }, [assetsToPreload, finish, onComplete]);
 
   return (
     <AnimatePresence>

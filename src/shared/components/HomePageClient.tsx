@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import IntroLoader from '@/shared/components/IntroLoader';
 import Navbar from '@/shared/widgets/Navbar';
 import Footer from '@/shared/widgets/Footer';
@@ -21,31 +21,39 @@ import GradientBridge from '@/shared/components/ui/GradientBridge';
  * then reveals the full page with a smooth transition.
  */
 const HomePageClient = () => {
-  const [introComplete, setIntroComplete] = useState(() => {
+  const [introComplete, setIntroComplete] = useState(false);
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('introPlayed') === 'true';
+      const played = window.localStorage.getItem('introPlayed') === 'true';
+      if (played) {
+        setIntroComplete(true);
+      }
     }
-    return false;
-  });
+  }, []);
 
   const handleIntroComplete = () => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('introPlayed', 'true');
+      window.localStorage.setItem('introPlayed', 'true');
+      window.scrollTo(0, 0); // Force scroll to top when entering
     }
     setIntroComplete(true);
   };
 
-  // Preload the first few Hero frame sequence images (critical for first impression)
-  const criticalImages = useMemo(() => {
-    const images: string[] = [];
-    // Preload all 100 frames of the Hero sequence
-    for (let i = 0; i < 100; i++) {
-      const idx = String(1 + i);
-      images.push(`/assets/3d-frame/frame-${idx}.png`);
+  // Ensure scroll is at top if skipping intro
+  useEffect(() => {
+    if (typeof window !== 'undefined' && introComplete) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }
-    // Also preload the logo
-    images.push('/assets/logo.png');
-    return images;
+  }, [introComplete]);
+
+  // Preload critical assets (Logo and Videos)
+  const criticalAssets = useMemo(() => {
+    return [
+      '/assets/logo.png',
+      '/assets/video/hero-video.mp4',
+      '/assets/video/exploded-video.mp4'
+    ];
   }, []);
 
   return (
@@ -53,7 +61,7 @@ const HomePageClient = () => {
       {!introComplete && (
         <IntroLoader
           onComplete={handleIntroComplete}
-          imagesToPreload={criticalImages}
+          assetsToPreload={criticalAssets}
         />
       )}
 

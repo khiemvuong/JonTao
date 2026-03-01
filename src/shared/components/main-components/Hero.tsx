@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useMotionTemplate } from 'motion/react';
 import { ChevronDown, Aperture, Gem, Sparkles, ShoppingBag, Phone, ShieldCheck } from 'lucide-react';
-import FrameSequenceCanvas from '@/shared/components/ui/FrameSequenceCanvas';
 import Link from 'next/link';
 
 /**
@@ -14,6 +13,11 @@ import Link from 'next/link';
  * Feature cards use delicate translucent glassmorphism.
  */
 const Hero = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -26,11 +30,9 @@ const Hero = () => {
   const blurValue = useTransform(scrollYProgress, [0, 0.12], [0, 20]);
   const filterText = useMotionTemplate`blur(${blurValue}px)`;
 
-  // Act 2: Phone appearance (visible almost immediately)
-  const phoneOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
-  const phoneScale = useTransform(scrollYProgress, [0, 0.1], [1.05, 1]);
-  // Frame sequence plays across almost the whole scroll to utilize all 240 frames
-  const frameProgress = useTransform(scrollYProgress, [0, 0.85], [0, 1]);
+  // Act 2: Phone appearance (visible immediately, scales down)
+  const phoneOpacity = useTransform(scrollYProgress, [0, 0.1], [0.5, 1]);
+  const phoneScale = useTransform(scrollYProgress, [0, 0.15], [1.1, 1]);
 
   // Act 2: Feature cards (delicate glassmorphism)
   const card1Opacity = useTransform(scrollYProgress, [0.15, 0.22, 0.35, 0.42], [0, 1, 1, 0]);
@@ -46,6 +48,9 @@ const Hero = () => {
   // Act 3: Bottom transition to Announcements
   const overlayOpacity = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
 
+  // Scroll Progress Bar
+  const progressBarWidth = useTransform(scrollYProgress, [0, 0.95], ['0%', '100%']);
+
   // Act 3: Phone flies up as scroll exits hero
   const phoneExitY = useTransform(scrollYProgress, [0.85, 1.0], ['0%', '-30%']);
 
@@ -55,89 +60,165 @@ const Hero = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-[#1a0b2e]"
-      style={{ height: '500vh' }}
+      className="relative w-full bg-[#1a0b2e] h-[300vh] sm:h-[500vh]"
     >
       {/* ── Rich primary-toned background ── */}
       <div className="sticky top-0 w-full h-screen overflow-hidden bg-[#0d0518]">
         
         {/* Rich ambient glow to make the primary tone pop */}
-        <div className="absolute inset-0 pointer-events-none opacity-50">
-          <div className="absolute top-[10%] left-[20%] w-[50vw] h-[50vh] bg-primary/30 rounded-full blur-[150px]" />
-          <div className="absolute bottom-[10%] right-[10%] w-[40vw] h-[40vh] bg-pink-500/10 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 pointer-events-none opacity-40 sm:opacity-50">
+          <div className="absolute top-[10%] left-[20%] w-[70vw] h-[70vh] bg-primary/20 rounded-full blur-[100px] sm:blur-[180px]" />
+          <div className="absolute bottom-[10%] right-[10%] w-[60vw] h-[60vh] bg-pink-500/10 rounded-full blur-[100px] sm:blur-[180px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-screen bg-violet-900/5 rounded-full blur-[120px] sm:blur-[200px]" />
+        </div>
+
+        {/* Subtle geometric pattern overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05]"
+             style={{ backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0)`, backgroundSize: '40px 40px' }}>
+        </div>
+
+        {/* Subtle noise/grain texture overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay"
+             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.65'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}>
+        </div>
+
+        {/* Floating animated sparkles/particles & Floral elements */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {mounted && (
+            <>
+              {/* Particles - Reduced count on mobile */}
+              {[...Array(typeof window !== 'undefined' && window.innerWidth < 768 ? 4 : 8)].map((_, i) => (
+                <motion.div
+                  key={`sparkle-${i}`}
+                  style={{ 
+                    left: `${(i * 23) % 100}%`, 
+                    top: `${(i * 19) % 100}%` 
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: [0, 0.4, 0],
+                    y: [-20, 20],
+                    scale: [0.5, 1, 0.5]
+                  }}
+                  transition={{
+                    duration: 5 + Math.random() * 10,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="absolute w-1 h-1 bg-white rounded-full blur-[0.5px] sm:blur-[1px]"
+                />
+              ))}
+
+
+
+              {/* Botanical Branches - Static for performance */}
+              <img
+                src="/assets/images/branch.png"
+                style={{ 
+                  left: '-5%', 
+                  top: '15%', 
+                  transform: 'scale(1.2) rotate(-20deg)',
+                  opacity: 0.08 
+                }}
+                className="absolute w-64 h-64 sm:w-96 sm:h-96 object-contain blur-[2px] sm:blur-[3px] hidden sm:block"
+              />
+              <img
+                src="/assets/images/branch.png"
+                style={{ 
+                  right: '-5%', 
+                  bottom: '10%', 
+                  transform: 'scale(1.5) rotate(160deg) scaleX(-1)',
+                  opacity: 0.08 
+                }}
+                className="absolute w-64 h-64 sm:w-96 sm:h-96 object-contain blur-[2px] sm:blur-[3px] hidden sm:block"
+              />
+            </>
+          )}
         </div>
 
         {/* ── Contained seamless phone canvas with vignette mask ── */}
-        <motion.div
-          style={{ 
-            opacity: phoneOpacity, 
-            scale: phoneScale,
-            y: phoneExitY,
-            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
-            WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
-          }}
-          className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[150%] sm:max-w-[1200px] sm:left-1/2 sm:w-full sm:translate-x-[-50%] z-10 flex items-center justify-center pointer-events-none mix-blend-screen"
-        >
-          {/* Full width/height so contain-fit displays the phone big and centered */}
-          <FrameSequenceCanvas
-            folder="/assets/3d-frame"
-            prefix="frame-"
-            startIndex={1}
-            frameCount={240}
-            scrollProgress={frameProgress}
-            padLength={1}
-            hideSkeleton
-            className="w-full h-full opacity-100"
-          />
-        </motion.div>
+        {mounted && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+            {/* Ambient Glow behind the video - Optimized for mobile */}
+            <div className="absolute w-[80vw] sm:w-[60vw] h-[40vh] sm:h-[60vh] bg-primary/20 rounded-full blur-[80px] sm:blur-[150px] opacity-40 animate-pulse" />
+            
+            <motion.div
+              style={{ 
+                opacity: phoneOpacity, 
+                scale: phoneScale,
+                y: phoneExitY,
+                maskImage: 'radial-gradient(ellipse at center, black 15%, transparent 75%)',
+                WebkitMaskImage: 'radial-gradient(ellipse at center, black 15%, transparent 75%)'
+              }}
+              className="w-[110%] sm:w-full sm:max-w-[1200px] z-10 flex items-center justify-center mix-blend-screen will-change-[transform,opacity]"
+            >
+              {/* Full width/height so contain-fit displays the phone big and centered */}
+              <video
+                suppressHydrationWarning
+                src="/assets/video/hero-video.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-contain opacity-100 image-render-auto"
+              />
+            </motion.div>
+          </div>
+        )}
 
         {/* ── Elegant Text section (appears first, then fades) ── */}
         <motion.div
            style={{
-            y: useTransform(scrollYProgress, [0, 0.1], ['0%', '-15%']),
+            y: useTransform(scrollYProgress, [0, 0.1], ['0%', '-10%']),
             opacity: useTransform(scrollYProgress, [0, 0.08], [1, 0]),
-            filter: useMotionTemplate`blur(${useTransform(scrollYProgress, [0, 0.08], [0, 20])}px)`,
+            filter: useMotionTemplate`blur(${useTransform(scrollYProgress, [0, 0.08], [0, 15])}px)`,
           }}
           className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="flex flex-col items-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center max-w-5xl"
           >
             {/* Pill badge */}
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white/70 font-light text-xs sm:text-sm mb-6 shadow-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-white/80 font-sans text-xs sm:text-sm mb-10 tracking-[0.05em] shadow-[0_4px_24px_-1px_rgba(0,0,0,0.2)]"
+            >
               <ShieldCheck size={14} className="text-emerald-400" />
-              Kiểm định 30 điểm · Bảo hành 12 tháng
-            </div>
-
+              Kiểm định 30 điểm <span className="text-white/20 px-1">|</span> Bảo hành 12 tháng
+            </motion.div>
+ 
             {/* Title */}
-            <h1 className="font-display text-4xl sm:text-6xl md:text-[5rem] text-white font-medium tracking-tight mb-4 drop-shadow-2xl max-w-4xl leading-[1.1]">
-              Không chỉ là công nghệ.
+            <h1 className="font-display text-5xl sm:text-7xl md:text-[6.5rem] text-white font-medium tracking-[-0.03em] mb-6 leading-[1.05] drop-shadow-[0_0_40px_rgba(255,255,255,0.15)]">
+              Không chỉ là <br className="hidden sm:block" /> công nghệ.
             </h1>
-
+ 
             {/* Subtitle */}
-            <p className="text-lg sm:text-xl md:text-2xl text-white/50 max-w-xl mx-auto leading-relaxed font-light mb-8 sm:mb-10">
+            <p className="text-xl sm:text-2xl md:text-3xl text-white/60 max-w-2xl mx-auto leading-relaxed font-serif font-light mb-12 italic">
               Đó là sự{' '}
-              <span className="font-serif font-medium text-transparent bg-clip-text bg-linear-to-r from-emerald-200 via-primary to-pink-300 text-[1.4em] tracking-tight leading-normal whitespace-nowrap">
+              <span className="font-script not-italic text-transparent bg-clip-text bg-linear-to-r from-emerald-300 via-primary to-pink-300 text-[1.4em] tracking-normal leading-none px-1">
                 Nguyên Bản.
               </span>
             </p>
-
+ 
             {/* CTA Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: 'easeOut', delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="flex flex-col sm:flex-row items-center gap-5"
             >
               <Link
                 href="/products"
-                className="group inline-flex items-center gap-2.5 bg-white text-black px-7 sm:px-8 py-3.5 rounded-full font-medium text-sm sm:text-base transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] hover:scale-105"
+                className="group relative inline-flex items-center gap-3 bg-white text-black px-10 py-4.5 rounded-full font-sans font-semibold text-base transition-all hover:scale-105 active:scale-95 shadow-[0_10px_40px_-10px_rgba(255,255,255,0.4)]"
               >
-                <ShoppingBag size={18} />
-                Khám phá sản phẩm
+                <div className="absolute inset-0 rounded-full bg-white/40 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ShoppingBag size={20} className="relative z-10" />
+                <span className="relative z-10">Khám phá sản phẩm</span>
               </Link>
             </motion.div>
           </motion.div>
@@ -200,6 +281,14 @@ const Hero = () => {
           style={{ opacity: overlayOpacity }}
           className="absolute inset-0 z-50 pointer-events-none bg-[#1a0b2e]"
         />
+
+        {/* ── Scroll Progress Bar ── */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 sm:h-1.5 bg-white/10 z-50">
+          <motion.div 
+            className="h-full bg-linear-to-r from-emerald-400 via-primary to-pink-500 rounded-r-full shadow-[0_0_10px_rgba(168,117,210,0.5)]"
+            style={{ width: progressBarWidth }}
+          />
+        </div>
       </div>
     </section>
   );

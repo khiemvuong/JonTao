@@ -21,8 +21,16 @@ const PainPoint = () => {
   const opacity3 = useTransform(scrollYProgress, [0.8, 0.9, 1], [0, 1, 1]);
   const y3 = useTransform(scrollYProgress, [0.8, 0.9, 1], [30, 0, 0]);
 
+  // Vertical Progress Bar
+  const progressHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+
+  // Step indicators based on scroll thresholds
+  const step1Active = useTransform(scrollYProgress, [0, 0.15, 0.40], [0.3, 1, 0.3]);
+  const step2Active = useTransform(scrollYProgress, [0.35, 0.55, 0.75], [0.3, 1, 0.3]);
+  const step3Active = useTransform(scrollYProgress, [0.7, 0.9, 1], [0.3, 1, 1]);
+
   return (
-    <section ref={containerRef} className="relative w-full h-[400vh] bg-[#0a0710]" data-navbar-dark>
+    <section ref={containerRef} className="relative w-full h-[250vh] sm:h-[400vh] bg-[#0a0710]" data-navbar-dark>
       <div className="sticky top-0 w-full h-screen flex flex-col items-center justify-center p-6 sm:p-12 overflow-hidden">
         
         {/* Line 1 */}
@@ -64,6 +72,25 @@ const PainPoint = () => {
           </p>
           <div className="mt-12 w-px h-24 bg-linear-to-b from-red-500 to-transparent opacity-50"></div>
         </motion.div>
+
+        {/* ── Vertical Timeline Progress ── */}
+        <div className="absolute left-[5%] sm:left-12 top-1/2 -translate-y-1/2 h-1/2 flex-col items-center z-40 hidden sm:flex">
+          {/* Track background */}
+          <div className="absolute top-0 bottom-0 w-px bg-white/10" />
+          
+          {/* Active fill */}
+          <motion.div 
+            className="absolute top-0 w-px bg-linear-to-b from-emerald-400 via-primary to-red-500 shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+            style={{ height: progressHeight }}
+          />
+
+          {/* Dots */}
+          <div className="absolute top-0 bottom-0 w-full flex flex-col justify-between items-center py-2">
+            <motion.div style={{ opacity: step1Active }} className="w-2.5 h-2.5 rounded-full bg-white z-10 shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+            <motion.div style={{ opacity: step2Active }} className="w-2.5 h-2.5 rounded-full bg-white z-10 shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+            <motion.div style={{ opacity: step3Active }} className="w-2.5 h-2.5 rounded-full bg-white z-10 shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+          </div>
+        </div>
 
       </div>
     </section>

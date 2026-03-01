@@ -53,8 +53,9 @@ const Navbar = ({ transparent = false }: NavbarProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [transparent]);
 
-  // True when navbar should use dark/transparent style
-  const isDark = (!scrolled && transparent) || darkSection;
+  // True when navbar should use dark/transparent style. 
+  // IMPORTANT: Force light style when mobile menu is open to ensure visibility against the white overlay.
+  const isDark = ((!scrolled && transparent) || darkSection) && !mobileOpen;
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
